@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "336050295149",
+    "firebase_url": "https://videorecommendation-ed5df.firebaseio.com",
+    "project_id": "videorecommendation-ed5df",
+    "storage_bucket": "videorecommendation-ed5df.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:336050295149:android:ff04a6e2cbee2a85",
+        "android_client_info": {
+          "package_name": "com.khtn.videorecommendation.videorecommendation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "336050295149-3vhjdjlt3jma9hruc2uo695fmhprfbk6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.khtn.videorecommendation.videorecommendation",
+            "certificate_hash": "13257fd6ca738f5d11a9d85fdb4330120559b4a8"
+          }
+        },
+        {
+          "client_id": "336050295149-v9om1s9u8ot9dhssqbr5ihdo3j27bfii.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "336050295149-v9om1s9u8ot9dhssqbr5ihdo3j27bfii.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDon9tTd1T5TqlD3ePjZVnVuXkxhe2V7g0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "336050295149-v9om1s9u8ot9dhssqbr5ihdo3j27bfii.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

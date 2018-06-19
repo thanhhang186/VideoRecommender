@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margin_sign">25dp</dimen>
+    <dimen name="padding_sign">14dp</dimen>
+    <dimen name="width_cardview">200dp</dimen>
+    <dimen name="height_cardview">180dp</dimen>
+    <dimen name="loading_width">16dp</dimen>
+    <dimen name="loading_height">16dp</dimen>
+    <dimen name="loading_width_medium">24dp</dimen>
+    <dimen name="loading_height_medium">24dp</dimen>
+    <dimen name="height_cardview_filter">120</dimen>
+    <dimen name="poster_progressbar_size">16dp</dimen>
+</resources>

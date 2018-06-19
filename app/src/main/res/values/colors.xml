@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorGreen">#8fc400</color>
+    <color name="colorGray">#eceff1</color>
+    <color name="colorTransparent">#00000000</color>
+    <color name="colorHint">#cfd8dc</color>
+
+    <color name="colorPrimary">#e9e9e9</color>
+    <color name="colorPrimaryDark">#b7b7b7</color>
+    <color name="colorAccent">#536DFE</color>
+
+    <color name="story_title_text_color">#000000</color>
+    <color name="placeholder_color" >#b6b5b5</color>
+    <color name="background">#EFEFEF</color>
+    <color name="background_recycler">#e9e9e9</color>
+
+    <color name="colorBlur">#30000000</color>
+    <color name="colorDetail">#30000000</color>
+
+    <color name="coloreError">#EB3F3F</color>
+</resources>

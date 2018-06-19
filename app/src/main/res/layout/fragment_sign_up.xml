@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="25dp"
+    android:orientation="vertical"
+    android:background="@color/colorWhite"
+    tools:context=".home.view.activity.HomeActivity">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/arima_madurai_bold"
+        android:gravity="center"
+        android:text="@string/sign_up_title"
+        android:textSize="40sp" />
+
+    <EditText
+        android:id="@+id/edtRegistEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_sign"
+        android:background="@drawable/round_edt"
+        android:hint="Your email"
+        android:padding="@dimen/padding_sign" />
+    <EditText
+        android:id="@+id/edtRegistName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_sign"
+        android:background="@drawable/round_edt"
+        android:hint="Your name"
+        android:padding="@dimen/padding_sign" />
+    <EditText
+        android:id="@+id/edtRegistPass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_sign"
+        android:background="@drawable/round_edt"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:padding="@dimen/padding_sign" />
+
+        <Button
+            android:id="@+id/btnSignUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_signin_btn"
+            android:text="@string/signup"
+            android:textColor="@color/colorWhite"
+            android:layout_margin="15dp"/>
+</LinearLayout>

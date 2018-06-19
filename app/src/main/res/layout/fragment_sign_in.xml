@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorWhite"
+    android:padding="25dp"
+    tools:context=".home.view.activity.HomeActivity">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/arima_madurai_bold"
+        android:gravity="center"
+        android:text="@string/login_title"
+        android:textSize="40sp" />
+
+    <EditText
+        android:id="@+id/edtLoginEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_sign"
+        android:background="@drawable/round_edt"
+        android:hint="Your email"
+        android:padding="@dimen/padding_sign" />
+
+    <EditText
+        android:id="@+id/edtLoginPass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_sign"
+        android:background="@drawable/round_edt"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:padding="@dimen/padding_sign" />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_sign">
+        <Button
+            android:id="@+id/btnSignIn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_signin_btn"
+            android:text="@string/signin"
+            android:textColor="@color/colorWhite" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnToSignUpFrag"
+            android:layout_marginTop="15dp"
+            android:layout_alignParentRight="true"
+            android:text="@string/registerAcount"
+            android:textSize="15sp" />
+    </RelativeLayout>
+
+</LinearLayout>

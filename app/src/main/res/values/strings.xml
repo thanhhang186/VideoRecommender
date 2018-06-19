@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">Video Recommender</string>
+    <string name="home_title">Video Rec</string>
+    <string name="login_title">Login</string>
+    <string name="sign_up_title">Sign Up</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="signin">Sign In</string>
+    <string name="signup">Sign Up</string>
+    <string name="registerAcount">Register now</string>
+    <string name="youtube_api_key">AIzaSyA0EgSrm5II187yIucVq4K3Z4Kc95YwNPo</string>
+
+    <string name="detail_video_title_transition">title</string>
+    <string name="detail_video_content_transition">content</string>
+    <string name="detail_video_poster_transition">poster</string>
+    <string name="auth_failed">Authentication failed, check your email and password or sign up</string>
+    <string name="minimum_password">Password too short, enter minimum 6 characters!</string>
+
+    <string name="description">"♩ Nothing's Gonna Change My Love For You - Westlife | [Kara + Video] ♩
+
+If I had to live without you near me
+The days would all be empty
+The nights would seem so long
+With you I see forever oh, so clearly
+I might have been in love before
+But it never felt this strong
+
+Our dreams are young and we both know
+They'll take us where we want to go
+Hold me now, touch me now
+I don't want to live without you.
+
+Nothings gonna change my love for you
+You oughta know by now how much I love you
+One thing you can be sure of
+I'll never ask for more than your love"</string>
+</resources>
