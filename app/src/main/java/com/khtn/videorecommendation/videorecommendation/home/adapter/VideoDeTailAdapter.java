@@ -27,6 +27,8 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
 
 import butterknife.BindView;
@@ -76,7 +78,7 @@ public class VideoDeTailAdapter extends VideoAbstract {
             posterRec.setImageDrawable(null);
             titleRec.setText(video.getName());
             tvDescriptionRec.setText(video.getVideoDescribe());
-            viewRec.setText(Long.toString(video.getTotalView()) + " lượt xem");
+            viewRec.setText(formatViews(video.getTotalView()) + " lượt xem");
             Picasso.get()
                     .load("https://img.youtube.com/vi/" + video.getLinkVideo() + "/0.jpg")
                     .placeholder(R.drawable.default_image).into(posterRec, new Callback() {
@@ -107,6 +109,8 @@ public class VideoDeTailAdapter extends VideoAbstract {
         View line;
         @BindView(R.id.ratingBar)
         RatingBar ratingBar;
+        @BindView(R.id.underLineRating)
+        View underLineRating;
         private boolean isRatingBarCreate = false;
 
         public VideoHeaderViewHolder(View itemView) {
@@ -116,12 +120,14 @@ public class VideoDeTailAdapter extends VideoAbstract {
 
         public void bind(Video video) {
             title.setText(video.getName());
-            view.setText(Long.toString(video.getTotalView()) + " lượt xem");
+            view.setText(formatViews(video.getTotalView()) + " lượt xem");
             FirebaseManager.getInstance().getRatingByUidAndVid(context, PrefUtils.getUserId(context), video.getId(), ratingBar);
             if (PrefUtils.getUserId(context) != null && !PrefUtils.getUserId(context).equals("")) {
                 ratingBar.setVisibility(View.VISIBLE);
+                underLineRating.setVisibility(View.VISIBLE);
             } else {
                 ratingBar.setVisibility(View.GONE);
+                underLineRating.setVisibility(View.GONE);
             }
             btnShowDetailVideo.setOnClickListener(v -> {
                 tvDescription.setText(video.getVideoDescribe());
@@ -138,6 +144,18 @@ public class VideoDeTailAdapter extends VideoAbstract {
                 }
             });
         }
+
+    }
+
+    private String formatViews(long totalView) {
+        DecimalFormat formatter = (DecimalFormat) DecimalFormat.getCurrencyInstance();
+        DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+        dfs.setCurrencySymbol("");
+        dfs.setGroupingSeparator('.');
+        formatter.setDecimalFormatSymbols(dfs);
+
+        String result = formatter.format(totalView);
+        return result.substring(0, result.length() - 3);
     }
 
     @NonNull

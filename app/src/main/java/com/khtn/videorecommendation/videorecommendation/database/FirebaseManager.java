@@ -19,6 +19,7 @@ import com.khtn.videorecommendation.videorecommendation.R;
 import com.khtn.videorecommendation.videorecommendation.home.adapter.VideoAdapter;
 import com.khtn.videorecommendation.videorecommendation.home.view.abstracts.VideoAbstract;
 import com.khtn.videorecommendation.videorecommendation.home.view.activity.HomeActivity;
+import com.khtn.videorecommendation.videorecommendation.home.view.fragments.SignUpFragment;
 import com.khtn.videorecommendation.videorecommendation.home.view.fragments.VideoFragment;
 import com.khtn.videorecommendation.videorecommendation.model.Log;
 import com.khtn.videorecommendation.videorecommendation.model.User;
@@ -60,54 +61,56 @@ public class FirebaseManager {
         return instance;
     }
 
-    public synchronized void signUpUser(Activity activity, String id, String email, String password) throws Exception {
+    public synchronized void signUpUser(Activity activity, String id, String email, String password, SignUpFragment.SignUpCallback signUpCallback) throws Exception {
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(activity, task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        try {
-                            saveUser(id, new User(id, user.getUid(), email));
-                            Toast.makeText(activity, "Registration successful" + task.getException(),
-                                    Toast.LENGTH_SHORT).show();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Toast.makeText(activity, "Authentication failed." + task.getException(),
-                                    Toast.LENGTH_SHORT).show();
+                    .addOnCompleteListener(activity, task -> {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            try {
+                                saveUser(id, new User(id, user.getUid(), email));
+                                signUpCallback.onSuccess(email);
+//                            Toast.makeText(activity, "Registration successful" + task.getException(),
+//                                    Toast.LENGTH_SHORT).show();
+                            } catch (Exception e) {
+//                                signUpCallback.onFailure("Authentication failed.");
+                                e.printStackTrace();
+                                android.util.Log.d(TAG, "signUpUser: catch");
+                            }
+                        } else {
+                            signUpCallback.onFailure("Authentication failed.");
+                            android.util.Log.d(TAG, "signUpUser: failure");
                         }
-                    } else {
-                        Toast.makeText(activity, "Authentication failed." + task.getException(),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    });
     }
 
     public synchronized void saveUser(String id, User user) throws Exception {
         // add to database
         DatabaseReference mFirebaseDatabase = mFirebaseInstance.getReference(Constants.DATABASE_USERS);
         mFirebaseDatabase.child(id).setValue(user);
+        android.util.Log.d(TAG, "signUpUser: success");
     }
 
     public synchronized void signInUser(Activity activity, FragmentManager fragmentManager, String email, String password) {
         mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(activity, task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        getUserByID(activity, fragmentManager, user.getUid());
-                    } else {
-                        Toast.makeText(activity, "Login failed", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    .addOnCompleteListener(activity, task -> {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            getUserByID(activity, fragmentManager, user.getUid());
+                        } else {
+                            Toast.makeText(activity, "Login failed", Toast.LENGTH_SHORT).show();
+                        }
+                    });
     }
 
-    public void getRecommendUserIDInVideoAdapter(String userID, VideoAbstract videoAdapter) {
+    public void getRecommendUserIDInVideoAdapter(String userID, VideoAbstract videoAdapter, VideoFragment.LoadVideosCallback callback) {
         videoAdapter.setVideos(new ArrayList<>());
-        getRecommendUserID(userID, videoAdapter);
+        getRecommendUserID(userID, videoAdapter, callback);
     }
 
-    public void getRecommendUserIDInVideoDetailAdapter(String userID, Video video, VideoAbstract videoAdapter) {
+    public void getRecommendUserIDInVideoDetailAdapter(String userID, Video video, VideoAbstract videoAdapter, VideoFragment.LoadVideosCallback callback) {
         videoAdapter.setVideos(new ArrayList<>());
         videoAdapter.getVideos().add(video);
-        getRecommendUserID(userID, videoAdapter);
+        getRecommendUserID(userID, videoAdapter, callback);
     }
 
     public void getUserByID(Activity activity, FragmentManager fragmentManager, String userID) {
@@ -121,7 +124,10 @@ public class FirebaseManager {
                         User user = postSnapshot.getValue(User.class);
                         PrefUtils.putUserID(activity, user.getId());
                         VideoFragment videoFragment = new VideoFragment();
-                        fragmentManager.beginTransaction().setCustomAnimations(R.anim.right_enter, R.anim.left_out).replace(R.id.container, videoFragment, HomeActivity.HOME_FRAGMENT).commit();
+                        fragmentManager.beginTransaction()
+                                    .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
+                                    .replace(R.id.container, videoFragment, HomeActivity.HOME_FRAGMENT)
+                                    .commit();
                         Toast.makeText(activity, "Login successfully", Toast.LENGTH_SHORT).show();
                         System.out.println("Login successful: " + user.getId());
                     } catch (Exception e) {
@@ -175,21 +181,21 @@ public class FirebaseManager {
 
     private void createAlertDialog(Context context, String videoId, float rating) {
         new AlertDialog.Builder(context)
-                .setTitle("Rating")
-                .setMessage("Confirm rating for video: " + rating)
-                .setNegativeButton(context.getString(android.R.string.cancel), (dialog, which) -> {
-                })
-                .setPositiveButton(context.getString(android.R.string.ok), (dialog, which) -> {
-                    try {
-                        FirebaseManager.getInstance().saveLog(null, new Log(PrefUtils.getUserId(context), videoId, rating));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                })
-                .show();
+                    .setTitle("Rating")
+                    .setMessage("Confirm rating for video: " + rating)
+                    .setNegativeButton(context.getString(android.R.string.cancel), (dialog, which) -> {
+                    })
+                    .setPositiveButton(context.getString(android.R.string.ok), (dialog, which) -> {
+                        try {
+                            FirebaseManager.getInstance().saveLog(null, new Log(PrefUtils.getUserId(context), videoId, rating));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    })
+                    .show();
     }
 
-    public void getRecommendUserID(String userID, VideoAbstract videoAdapter) {
+    public void getRecommendUserID(String userID, VideoAbstract videoAdapter, VideoFragment.LoadVideosCallback callback) {
         DatabaseReference mFirebaseDatabase = mFirebaseInstance.getReference(Constants.DATABASE_RECOMMENDS);
         Query myQuery = mFirebaseDatabase.child(userID).limitToLast(Constants.LIMIT_RECOMMEND);
         myQuery.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -207,15 +213,18 @@ public class FirebaseManager {
                     }
                 }
                 System.out.println("mListVideoRecommend size: " + videoAdapter.getVideos().size());
-                if (videoAdapter.getVideos().size() < Constants.LIMIT_RECOMMEND) {
+                if (videoAdapter.getVideos().size() < Constants.LIMIT_RECOMMEND + 10) {
                     android.util.Log.d(TAG, "getTopViewVideo: ");
-                    getTopViewVideo(Constants.LIMIT_RECOMMEND + videoAdapter.getVideos().size(), videoAdapter);
+                    getTopViewVideo(Constants.LIMIT_RECOMMEND + videoAdapter.getVideos().size(), videoAdapter, callback);
+                } else {
+                    callback.onLoadedVideos();
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
                 System.out.println("onCancelled");
+                callback.onVideosNotAvailable();
             }
         });
     }
@@ -245,9 +254,9 @@ public class FirebaseManager {
         });
     }
 
-    public void getTopViewVideo(int numberLimit, VideoAbstract videoAdapter) {
+    public void getTopViewVideo(int numberLimit, VideoAbstract videoAdapter, VideoFragment.LoadVideosCallback callback) {
         DatabaseReference mFirebaseDatabase = mFirebaseInstance.getReference(Constants.DATABASE_VIDEOS);
-        Query myQuery = mFirebaseDatabase.orderByChild(Constants.DATABASE_TOTAL_VIEW).limitToLast(numberLimit);
+        Query myQuery = mFirebaseDatabase.orderByChild(Constants.DATABASE_TOTAL_VIEW).limitToLast(numberLimit + 10);
         myQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -265,19 +274,21 @@ public class FirebaseManager {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    if (mListVideoRecommend.size() + videoAdapter.getVideos().size() == Constants.LIMIT_RECOMMEND) {
+                    if (mListVideoRecommend.size() + videoAdapter.getVideos().size() == 20) {
+                        android.util.Log.d(TAG, "onDataChange: fuck");
                         break;
                     }
                 }
                 Collections.reverse(mListVideoRecommend);
                 videoAdapter.getVideos().addAll(mListVideoRecommend);
                 videoAdapter.notifyDataSetChanged();
+                callback.onLoadedVideos();
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
                 System.out.println("onCancelled");
-
+                callback.onVideosNotAvailable();
             }
         });
     }

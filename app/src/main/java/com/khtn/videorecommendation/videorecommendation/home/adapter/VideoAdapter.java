@@ -21,6 +21,8 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
 
 import butterknife.BindView;
@@ -67,7 +69,8 @@ public class VideoAdapter extends VideoAbstract {
             poster.setImageDrawable(null);
             title.setText(video.getName());
             tvDescription.setText(video.getVideoDescribe());
-            view.setText(Long.toString(video.getTotalView()) + " lượt xem");
+
+            view.setText(formatViews(video.getTotalView()) + " lượt xem");
             Picasso.get()
                     .load("https://img.youtube.com/vi/" + video.getLinkVideo() + "/0.jpg")
                     .placeholder(R.drawable.default_image).into(poster, new Callback() {
@@ -83,6 +86,17 @@ public class VideoAdapter extends VideoAbstract {
             });
             itemView.setOnClickListener(v -> VideoAdapter.this.onClickVideoListener.onVideoClicked(video));
 
+        }
+
+        private String formatViews(long totalView) {
+            DecimalFormat formatter = (DecimalFormat) DecimalFormat.getCurrencyInstance();
+            DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+            dfs.setCurrencySymbol("");
+            dfs.setGroupingSeparator('.');
+            formatter.setDecimalFormatSymbols(dfs);
+
+            String result = formatter.format(totalView);
+            return result.substring(0, result.length() - 3);
         }
     }
 

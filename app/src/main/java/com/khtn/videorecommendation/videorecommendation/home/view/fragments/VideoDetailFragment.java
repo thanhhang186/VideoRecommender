@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -34,7 +35,9 @@ import butterknife.ButterKnife;
 public class VideoDetailFragment extends Fragment implements YouTubePlayer.OnInitializedListener, OnClickVideoListener {
     private YouTubePlayerSupportFragment youTubeVideo;
     @BindView(R.id.videosInCategory)
-    RecyclerView listVideoRecommender;
+    RecyclerView listVideoRecommended;
+    @BindView(R.id.load_data_progress)
+    ProgressBar loadingProgress;
     private Video video;
 
     private Callback callback;
@@ -76,13 +79,27 @@ public class VideoDetailFragment extends Fragment implements YouTubePlayer.OnIni
         listVideos = new ArrayList<>();
         video = (Video) getActivity().getIntent().getSerializableExtra("video");
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        listVideoRecommender.setLayoutManager(linearLayoutManager);
-        listVideoRecommender.setHasFixedSize(true);
+        listVideoRecommended.setLayoutManager(linearLayoutManager);
+        listVideoRecommended.setHasFixedSize(true);
 
         videoAdapter = new VideoDeTailAdapter(listVideos, this);
-        listVideoRecommender.setAdapter(videoAdapter);
+        listVideoRecommended.setAdapter(videoAdapter);
 
-        FirebaseManager.getInstance().getRecommendUserIDInVideoDetailAdapter(PrefUtils.getUserId(getActivity()), video, videoAdapter);
+        loadingProgress.setVisibility(View.VISIBLE);
+        FirebaseManager.getInstance()
+                    .getRecommendUserIDInVideoDetailAdapter(
+                                PrefUtils.getUserId(getActivity()), video, videoAdapter,
+                                new VideoFragment.LoadVideosCallback() {
+                                    @Override
+                                    public void onLoadedVideos() {
+                                        loadingProgress.setVisibility(View.GONE);
+                                    }
+
+                                    @Override
+                                    public void onVideosNotAvailable() {
+                                        loadingProgress.setVisibility(View.GONE);
+                                    }
+                                });
     }
 
     @Override
@@ -107,7 +124,7 @@ public class VideoDetailFragment extends Fragment implements YouTubePlayer.OnIni
 
             @Override
             public void onLoaded(String s) {
-
+                youTubePlayer.play();
             }
 
             @Override

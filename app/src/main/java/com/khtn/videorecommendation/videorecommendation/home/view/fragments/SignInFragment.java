@@ -1,5 +1,6 @@
 package com.khtn.videorecommendation.videorecommendation.home.view.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -39,6 +40,11 @@ public class SignInFragment extends Fragment implements SignInView {
         // Required empty public constructor
     }
 
+    @SuppressLint("ValidFragment")
+    public SignInFragment(String email) {
+        edtLoginEmail.setText(email);
+    }
+
     public interface Callback {
         void showToolbarLogin();
     }
@@ -73,7 +79,8 @@ public class SignInFragment extends Fragment implements SignInView {
             return;
         }
         try {
-            FirebaseManager.getInstance().signInUser(getActivity(), getFragmentManager(), email, password);
+            FirebaseManager.getInstance()
+                        .signInUser(getActivity(), getFragmentManager(), email, password);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -84,7 +91,11 @@ public class SignInFragment extends Fragment implements SignInView {
             @Override
             public void onClick(View v) {
                 SignUpFragment signUpFragment = new SignUpFragment();
-                getFragmentManager().beginTransaction().setCustomAnimations(R.anim.right_enter, R.anim.left_out).replace(R.id.container, signUpFragment, HomeActivity.SIGN_UP_FRAGMENT).addToBackStack(null).commit();
+                getFragmentManager().beginTransaction()
+                            .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
+                            .replace(R.id.container, signUpFragment, HomeActivity.SIGN_UP_FRAGMENT)
+                            .addToBackStack(null)
+                            .commit();
             }
         });
     }

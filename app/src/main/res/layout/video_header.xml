@@ -1,33 +1,49 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginBottom="8dp"
-    android:layout_marginLeft="8dp"
-    android:layout_marginRight="8dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
     android:background="@color/colorWhite"
     android:orientation="vertical">
+
     <RelativeLayout
         android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
         android:layout_height="wrap_content">
+
         <TextView
             android:id="@+id/title"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
             android:fontFamily="@font/arima_madurai_bold"
+            android:gravity="center_vertical"
             android:text="Tao đợi mẹ."
+            android:maxLines="1"
+            android:ellipsize="end"
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:gravity="center_vertical"
-            android:layout_alignParentLeft="true"
             android:transitionName="@string/detail_video_title_transition" />
-        <ImageView
-            android:id="@+id/btnShowDetailVideo"
+
+        <android.support.constraint.ConstraintLayout
             android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/ic_arrow_drop_down"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_toRightOf="@id/title"/>
+            android:layout_toRightOf="@id/title">
+
+            <ImageView
+                android:id="@+id/btnShowDetailVideo"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_arrow_drop_down"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+        </android.support.constraint.ConstraintLayout>
+
     </RelativeLayout>
 
     <TextView
@@ -47,35 +63,41 @@
         android:layout_height="0.5dp"
         android:layout_marginTop="8dp"
         android:background="@color/colorGray" />
+
     <RatingBar
         android:id="@+id/ratingBar"
+        style="?android:attr/ratingBarStyleIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:stepSize="1"
-        android:layout_marginTop="6dp"
         android:layout_gravity="center"
-        style="?android:attr/ratingBarStyleSmall"
+        android:layout_marginTop="6dp"
         android:isIndicator="false"
-        android:numStars="5"/>
+        android:numStars="5"
+        android:stepSize="0.5" />
+
     <View
+        android:id="@+id/underLineRating"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_marginTop="8dp"
         android:background="@color/colorGray" />
+
     <TextView
         android:id="@+id/tv_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:fontFamily="sans-serif-condensed"
         android:text="@string/description"
         android:textSize="12dp"
-        android:layout_marginTop="8dp"
-        android:visibility="gone"/>
+        android:visibility="gone" />
+
     <View
         android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_marginTop="8dp"
         android:background="@color/colorGray"
-        android:visibility="gone"/>
+        android:visibility="gone" />
+
 </LinearLayout>

@@ -76,7 +76,31 @@ public class VideoFragment extends Fragment implements HomeView, OnClickVideoLis
         videos = new ArrayList<>();
         videoCardAdapter = new VideoAdapter(this, videos);
         recyclerView.setAdapter(videoCardAdapter);
-            FirebaseManager.getInstance().getRecommendUserIDInVideoAdapter(PrefUtils.getUserId(getActivity()), videoCardAdapter);
+
+        loadDataProgress.setVisibility(View.VISIBLE);
+        FirebaseManager.getInstance()
+                    .getRecommendUserIDInVideoAdapter(
+                                PrefUtils.getUserId(getActivity()),
+                                videoCardAdapter,
+                                new LoadVideosCallback() {
+                                    @Override
+                                    public void onLoadedVideos() {
+                                        loadDataProgress.setVisibility(View.GONE);
+                                    }
+
+                                    @Override
+                                    public void onVideosNotAvailable() {
+                                        loadDataProgress.setVisibility(View.GONE);
+                                    }
+                                }
+                    );
+    }
+
+    public interface LoadVideosCallback {
+
+        void onLoadedVideos();
+
+        void onVideosNotAvailable();
     }
 
     @Override

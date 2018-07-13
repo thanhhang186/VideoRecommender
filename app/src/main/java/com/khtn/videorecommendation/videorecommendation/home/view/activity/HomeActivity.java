@@ -20,13 +20,14 @@ import com.khtn.videorecommendation.videorecommendation.model.Video;
 import com.khtn.videorecommendation.videorecommendation.search.view.SearchActivity;
 import com.khtn.videorecommendation.videorecommendation.utils.PrefUtils;
 
-public class HomeActivity extends AppCompatActivity implements VideoFragment.Callback, SignInFragment.Callback, SignUpFragment.Callback {
+public class HomeActivity extends AppCompatActivity implements VideoFragment.Callback, SignInFragment.Callback, SignUpFragment.Callback, SignUpFragment.BackFragment {
     public static final String HOME_FRAGMENT = "HomeFragment";
     public static final String SIGN_IN_FRAGMENT = "SignInFragment";
     public static final String SIGN_UP_FRAGMENT = "SignUpFragment";
     private Toolbar toolbar;
     private Menu menu;
     private TextView toolbarTitle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -193,4 +194,13 @@ public class HomeActivity extends AppCompatActivity implements VideoFragment.Cal
         startActivity(intent);
     }
 
+    @Override
+    public void onBack(String email) {
+        SignInFragment signInFragment = new SignInFragment(email);
+        getSupportFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.left_enter, R.anim.right_out)
+                    .replace(R.id.container, signInFragment, SIGN_IN_FRAGMENT)
+                    .addToBackStack(null)
+                    .commit();
+    }
 }
