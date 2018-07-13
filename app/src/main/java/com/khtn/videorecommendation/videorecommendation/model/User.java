@@ -2,39 +2,39 @@ package com.khtn.videorecommendation.videorecommendation.model;
 
 public class User {
         private String id;
-        private String name;
+        private String uid;
         private String email;
 
         public User() {
         }
 
-        public User(String name, String email) {
-            this.name = name;
-            this.email = email;
-        }
+    public User(String id, String uid, String email) {
+        this.id = id;
+        this.uid = uid;
+        this.email = email;
+    }
 
-        public String getId() {
-            return id;
-        }
+    public String getId() {
+        return id;
+    }
 
-        public String getName() {
-            return name;
-        }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-        public String getEmail() {
-            return email;
-        }
+    public String getUid() {
+        return uid;
+    }
 
-        public void setId(String id) {
-            this.id = id;
-        }
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
 
-        public void setName(String name) {
-            this.name = name;
-        }
+    public String getEmail() {
+        return email;
+    }
 
-        public void setEmail(String email) {
-            this.email = email;
-        }
-
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }

@@ -7,7 +7,7 @@ public class Video implements Serializable {
     private String name;
     private String linkVideo;
     private String duration;
-    private int totalView;
+    private long totalView;
     private String videoDescribe;
 
     public Video() {
@@ -56,11 +56,11 @@ public class Video implements Serializable {
         this.duration = duration;
     }
 
-    public int getTotalView() {
+    public long getTotalView() {
         return totalView;
     }
 
-    public void setTotalView(int totalView) {
+    public void setTotalView(long totalView) {
         this.totalView = totalView;
     }
 

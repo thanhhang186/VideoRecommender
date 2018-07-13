@@ -3,6 +3,7 @@ package com.khtn.videorecommendation.videorecommendation.home.view.fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -75,8 +76,7 @@ public class VideoFragment extends Fragment implements HomeView, OnClickVideoLis
         videos = new ArrayList<>();
         videoCardAdapter = new VideoAdapter(this, videos);
         recyclerView.setAdapter(videoCardAdapter);
-
-        FirebaseManager.getInstance().getRecommendUserIDInVideoAdapter(PrefUtils.getUserId(getActivity()), videoCardAdapter);
+            FirebaseManager.getInstance().getRecommendUserIDInVideoAdapter(PrefUtils.getUserId(getActivity()), videoCardAdapter);
     }
 
     @Override
@@ -100,7 +100,9 @@ public class VideoFragment extends Fragment implements HomeView, OnClickVideoLis
 
     @Override
     public void displayHome() {
-
+        new Handler().postDelayed(() -> {
+            hideLoadingProgress();
+        }, 1000);
     }
 
     @Override
@@ -110,7 +112,8 @@ public class VideoFragment extends Fragment implements HomeView, OnClickVideoLis
 
     @Override
     public void showLoadingProgress() {
-
+        primaryLayout.setVisibility(View.INVISIBLE);
+        loadDataProgress.setVisibility(View.VISIBLE);
     }
 
     @Override

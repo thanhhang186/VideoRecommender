@@ -6,9 +6,9 @@ import java.util.List;
 
 public class Validation {
 
-    public static boolean containsVideoID(List<Video> videos, String id) {
+    public static boolean containsVideoID(List<Video> videos, Video vd) {
         for (Video video : videos) {
-            if (video.getLinkVideo().equals(id)) {
+            if (video.getLinkVideo().equals(vd.getLinkVideo())) {
                 return true;
             }
         }

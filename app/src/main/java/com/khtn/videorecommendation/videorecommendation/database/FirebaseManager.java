@@ -1,6 +1,9 @@
 package com.khtn.videorecommendation.videorecommendation.database;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.widget.RatingBar;
 import android.widget.Toast;
 import android.support.v4.app.FragmentManager;
 
@@ -26,9 +29,12 @@ import com.khtn.videorecommendation.videorecommendation.utils.Validation;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FirebaseManager {
+    private static final String TAG = "fbmnmg";
     private static FirebaseManager instance;
 
     private FirebaseDatabase mFirebaseInstance;
@@ -54,13 +60,13 @@ public class FirebaseManager {
         return instance;
     }
 
-    public synchronized void signUpUser(Activity activity, String username, String email, String password) throws Exception {
+    public synchronized void signUpUser(Activity activity, String id, String email, String password) throws Exception {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(activity, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         try {
-                            saveUser(user.getUid(), new User(username, email));
+                            saveUser(id, new User(id, user.getUid(), email));
                             Toast.makeText(activity, "Registration successful" + task.getException(),
                                     Toast.LENGTH_SHORT).show();
                         } catch (Exception e) {
@@ -86,10 +92,7 @@ public class FirebaseManager {
                 .addOnCompleteListener(activity, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
-                        PrefUtils.putUserID(activity, user.getUid());
-                        VideoFragment videoFragment = new VideoFragment();
-                        fragmentManager.beginTransaction().setCustomAnimations(R.anim.right_enter, R.anim.left_out).replace(R.id.container, videoFragment, HomeActivity.HOME_FRAGMENT).commit();
-                        Toast.makeText(activity, "Login successful", Toast.LENGTH_SHORT).show();
+                        getUserByID(activity, fragmentManager, user.getUid());
                     } else {
                         Toast.makeText(activity, "Login failed", Toast.LENGTH_SHORT).show();
                     }
@@ -105,6 +108,85 @@ public class FirebaseManager {
         videoAdapter.setVideos(new ArrayList<>());
         videoAdapter.getVideos().add(video);
         getRecommendUserID(userID, videoAdapter);
+    }
+
+    public void getUserByID(Activity activity, FragmentManager fragmentManager, String userID) {
+        DatabaseReference mFirebaseDatabase = mFirebaseInstance.getReference(Constants.DATABASE_USERS);
+        Query myQuery = mFirebaseDatabase.orderByChild("uid").equalTo(userID);
+        myQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    try {
+                        User user = postSnapshot.getValue(User.class);
+                        PrefUtils.putUserID(activity, user.getId());
+                        VideoFragment videoFragment = new VideoFragment();
+                        fragmentManager.beginTransaction().setCustomAnimations(R.anim.right_enter, R.anim.left_out).replace(R.id.container, videoFragment, HomeActivity.HOME_FRAGMENT).commit();
+                        Toast.makeText(activity, "Login successfully", Toast.LENGTH_SHORT).show();
+                        System.out.println("Login successful: " + user.getId());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(activity, "Login failed", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                System.out.println("onCancelled");
+
+            }
+        });
+    }
+
+    public void saveRating(Log log) throws Exception {
+        // add to database
+        DatabaseReference mFirebaseDatabase = mFirebaseInstance.getReference(Constants.DATABASE_RATINGS);
+        mFirebaseDatabase.child(log.getUserId()).child(log.getVideoId()).setValue(log.getRating());
+    }
+
+    public void getRatingByUidAndVid(Context context, String userId, String videoId, RatingBar ratingBar) {
+        DatabaseReference mFirebaseDatabase = mFirebaseInstance.getReference(Constants.DATABASE_RATINGS);
+        Query myQuery = mFirebaseDatabase.child(userId).child(videoId);
+        myQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Float rating = dataSnapshot.getValue(Float.class);
+                    ratingBar.setRating(rating);
+                } else {
+                    ratingBar.setRating(0);
+                }
+                ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+                    @Override
+                    public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                        createAlertDialog(context, videoId, rating);
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                System.out.println("onCancelled");
+
+            }
+        });
+    }
+
+    private void createAlertDialog(Context context, String videoId, float rating) {
+        new AlertDialog.Builder(context)
+                .setTitle("Rating")
+                .setMessage("Confirm rating for video: " + rating)
+                .setNegativeButton(context.getString(android.R.string.cancel), (dialog, which) -> {
+                })
+                .setPositiveButton(context.getString(android.R.string.ok), (dialog, which) -> {
+                    try {
+                        FirebaseManager.getInstance().saveLog(null, new Log(PrefUtils.getUserId(context), videoId, rating));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                })
+                .show();
     }
 
     public void getRecommendUserID(String userID, VideoAbstract videoAdapter) {
@@ -126,6 +208,7 @@ public class FirebaseManager {
                 }
                 System.out.println("mListVideoRecommend size: " + videoAdapter.getVideos().size());
                 if (videoAdapter.getVideos().size() < Constants.LIMIT_RECOMMEND) {
+                    android.util.Log.d(TAG, "getTopViewVideo: ");
                     getTopViewVideo(Constants.LIMIT_RECOMMEND + videoAdapter.getVideos().size(), videoAdapter);
                 }
             }
@@ -133,7 +216,6 @@ public class FirebaseManager {
             @Override
             public void onCancelled(DatabaseError error) {
                 System.out.println("onCancelled");
-
             }
         });
     }
@@ -172,12 +254,13 @@ public class FirebaseManager {
                 List<Video> mListVideoRecommend = new ArrayList<>();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     String key = postSnapshot.getKey();
-                    if (Validation.containsVideoID(videoAdapter.getVideos(), key)) {
-                        continue;
-                    }
+                    android.util.Log.d(TAG, "getTopViewVideo: " + key);
                     try {
                         Video video = postSnapshot.getValue(Video.class);
                         video.setId(key);
+                        if (Validation.containsVideoID(videoAdapter.getVideos(), video)) {
+                            continue;
+                        }
                         mListVideoRecommend.add(video);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -206,5 +289,16 @@ public class FirebaseManager {
             id = mFirebaseDatabase.push().getKey();
         }
         mFirebaseDatabase.child(id).setValue(log);
+        saveRating(log);
+    }
+
+    public void updateTotalViewsVideo(Video video) throws Exception {
+        // add to database
+        DatabaseReference mFirebaseDatabase = mFirebaseInstance.getReference(Constants.DATABASE_VIDEOS);
+        if (video.getId() != null && !video.getId().equals("")) {
+            Map<String, Object> videoUpdates = new HashMap<>();
+            videoUpdates.put(Constants.DATABASE_TOTAL_VIEW, video.getTotalView() + 1);
+            mFirebaseDatabase.child(video.getId()).updateChildren(videoUpdates);
+        }
     }
 }

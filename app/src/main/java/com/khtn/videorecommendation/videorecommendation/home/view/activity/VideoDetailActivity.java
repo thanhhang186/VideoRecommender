@@ -13,6 +13,7 @@ public class VideoDetailActivity extends AppCompatActivity implements VideoDetai
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_detail);
         loadDetailVideoFragment();

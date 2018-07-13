@@ -76,7 +76,7 @@ public class VideoDeTailAdapter extends VideoAbstract {
             posterRec.setImageDrawable(null);
             titleRec.setText(video.getName());
             tvDescriptionRec.setText(video.getVideoDescribe());
-            viewRec.setText(Integer.toString(video.getTotalView()) + " lượt xem");
+            viewRec.setText(Long.toString(video.getTotalView()) + " lượt xem");
             Picasso.get()
                     .load("https://img.youtube.com/vi/" + video.getLinkVideo() + "/0.jpg")
                     .placeholder(R.drawable.default_image).into(posterRec, new Callback() {
@@ -107,6 +107,7 @@ public class VideoDeTailAdapter extends VideoAbstract {
         View line;
         @BindView(R.id.ratingBar)
         RatingBar ratingBar;
+        private boolean isRatingBarCreate = false;
 
         public VideoHeaderViewHolder(View itemView) {
             super(itemView);
@@ -115,19 +116,13 @@ public class VideoDeTailAdapter extends VideoAbstract {
 
         public void bind(Video video) {
             title.setText(video.getName());
-            view.setText(Integer.toString(video.getTotalView()) + " lượt xem");
-            ratingBar.setRating(3);
+            view.setText(Long.toString(video.getTotalView()) + " lượt xem");
+            FirebaseManager.getInstance().getRatingByUidAndVid(context, PrefUtils.getUserId(context), video.getId(), ratingBar);
             if (PrefUtils.getUserId(context) != null && !PrefUtils.getUserId(context).equals("")) {
                 ratingBar.setVisibility(View.VISIBLE);
             } else {
                 ratingBar.setVisibility(View.GONE);
             }
-            ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-                @Override
-                public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                    createAlertDialog(video.getId(), rating);
-                }
-            });
             btnShowDetailVideo.setOnClickListener(v -> {
                 tvDescription.setText(video.getVideoDescribe());
                 if (btnShowDetailClicked == false) {
@@ -143,22 +138,6 @@ public class VideoDeTailAdapter extends VideoAbstract {
                 }
             });
         }
-    }
-
-    public void createAlertDialog(String videoId, float rating) {
-        new AlertDialog.Builder(context)
-                .setTitle("Rating")
-                .setMessage("Confirm rating for video: " + rating)
-                .setNegativeButton(context.getString(android.R.string.cancel), (dialog, which) -> {
-                })
-                .setPositiveButton(context.getString(android.R.string.ok), (dialog, which) -> {
-                    try {
-                        FirebaseManager.getInstance().saveLog(null, new Log(PrefUtils.getUserId(context), videoId, rating));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                })
-                .show();
     }
 
     @NonNull

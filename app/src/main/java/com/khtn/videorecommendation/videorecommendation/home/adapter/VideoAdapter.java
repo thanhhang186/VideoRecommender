@@ -67,7 +67,7 @@ public class VideoAdapter extends VideoAbstract {
             poster.setImageDrawable(null);
             title.setText(video.getName());
             tvDescription.setText(video.getVideoDescribe());
-            view.setText(Integer.toString(video.getTotalView()) + " lượt xem");
+            view.setText(Long.toString(video.getTotalView()) + " lượt xem");
             Picasso.get()
                     .load("https://img.youtube.com/vi/" + video.getLinkVideo() + "/0.jpg")
                     .placeholder(R.drawable.default_image).into(poster, new Callback() {

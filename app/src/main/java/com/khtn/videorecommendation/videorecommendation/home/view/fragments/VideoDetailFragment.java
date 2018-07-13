@@ -122,7 +122,11 @@ public class VideoDetailFragment extends Fragment implements YouTubePlayer.OnIni
 
             @Override
             public void onVideoEnded() {
-
+                try {
+                    FirebaseManager.getInstance().updateTotalViewsVideo(video);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override

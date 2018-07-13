@@ -56,7 +56,7 @@ public class SignUpFragment extends Fragment implements SignUpView {
         View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
         ButterKnife.bind(this, view);
         showToolbarRegister();
-        btnSignUp.setOnClickListener(v->{
+        btnSignUp.setOnClickListener(v -> {
             signInUser();
         });
         return view;
@@ -67,15 +67,15 @@ public class SignUpFragment extends Fragment implements SignUpView {
         String name = edtRegistName.getText().toString();
         String password = edtRegistPass.getText().toString();
         auth = FirebaseAuth.getInstance();
-        if(email.trim().equals("")){
+        if (email.trim().equals("")) {
             Toast.makeText(getContext(), "Please enter valid email.", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(name.trim().equals("")){
+        if (name.trim().equals("")) {
             Toast.makeText(getContext(), "Please enter your name.", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(password.trim().equals("")){
+        if (password.trim().equals("")) {
             Toast.makeText(getContext(), "Please enter your password.", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -84,7 +84,8 @@ public class SignUpFragment extends Fragment implements SignUpView {
             return;
         }
         try {
-            FirebaseManager.getInstance().signUpUser(getActivity(), name, email, password);
+            int id = (int) (System.currentTimeMillis() / 1000);
+            FirebaseManager.getInstance().signUpUser(getActivity(), id + "", email, password);
             edtRegistEmail.setText("");
             edtRegistName.setText("");
             edtRegistPass.setText("");
