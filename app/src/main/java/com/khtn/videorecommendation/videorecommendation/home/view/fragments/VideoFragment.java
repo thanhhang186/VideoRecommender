@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.khtn.videorecommendation.videorecommendation.R;
 import com.khtn.videorecommendation.videorecommendation.database.FirebaseManager;
@@ -85,11 +86,13 @@ public class VideoFragment extends Fragment implements HomeView, OnClickVideoLis
                                 new LoadVideosCallback() {
                                     @Override
                                     public void onLoadedVideos() {
+//                                        Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
                                         loadDataProgress.setVisibility(View.GONE);
                                     }
 
                                     @Override
                                     public void onVideosNotAvailable() {
+//                                        Toast.makeText(getContext(), "Failure", Toast.LENGTH_SHORT).show();
                                         loadDataProgress.setVisibility(View.GONE);
                                     }
                                 }

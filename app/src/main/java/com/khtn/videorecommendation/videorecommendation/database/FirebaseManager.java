@@ -166,7 +166,8 @@ public class FirebaseManager {
                 ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
                     @Override
                     public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                        createAlertDialog(context, videoId, rating);
+                        if (rating != 0)
+                            createAlertDialog(context, videoId, rating, ratingBar);
                     }
                 });
             }
@@ -179,11 +180,12 @@ public class FirebaseManager {
         });
     }
 
-    private void createAlertDialog(Context context, String videoId, float rating) {
+    private void createAlertDialog(Context context, String videoId, float rating, RatingBar ratingBar) {
         new AlertDialog.Builder(context)
                     .setTitle("Rating")
                     .setMessage("Confirm rating for video: " + rating)
                     .setNegativeButton(context.getString(android.R.string.cancel), (dialog, which) -> {
+                        ratingBar.setRating(0);
                     })
                     .setPositiveButton(context.getString(android.R.string.ok), (dialog, which) -> {
                         try {
@@ -201,11 +203,13 @@ public class FirebaseManager {
         myQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                android.util.Log.d(TAG, "onDataChange: start");
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     try {
                         String value = postSnapshot.getValue(String.class);
                         Video video = new Video();
                         video.setId(value);
+                        video.setRecommended(true);
                         videoAdapter.getVideos().add(video);
                         getViewByID(value, videoAdapter.getVideos().size() - 1, videoAdapter);
                     } catch (Exception e) {
@@ -213,7 +217,7 @@ public class FirebaseManager {
                     }
                 }
                 System.out.println("mListVideoRecommend size: " + videoAdapter.getVideos().size());
-                if (videoAdapter.getVideos().size() < Constants.LIMIT_RECOMMEND + 10) {
+                if (videoAdapter.getVideos().size() < Constants.LIMIT_RECOMMEND) {
                     android.util.Log.d(TAG, "getTopViewVideo: ");
                     getTopViewVideo(Constants.LIMIT_RECOMMEND + videoAdapter.getVideos().size(), videoAdapter, callback);
                 } else {
@@ -239,6 +243,7 @@ public class FirebaseManager {
                 try {
                     Video video = dataSnapshot.getValue(Video.class);
                     video.setId(key);
+                    video.setRecommended(true);
                     videoAdapter.getVideos().set(index, video);
                     videoAdapter.notifyDataSetChanged();
                 } catch (Exception e) {
@@ -256,7 +261,7 @@ public class FirebaseManager {
 
     public void getTopViewVideo(int numberLimit, VideoAbstract videoAdapter, VideoFragment.LoadVideosCallback callback) {
         DatabaseReference mFirebaseDatabase = mFirebaseInstance.getReference(Constants.DATABASE_VIDEOS);
-        Query myQuery = mFirebaseDatabase.orderByChild(Constants.DATABASE_TOTAL_VIEW).limitToLast(numberLimit + 10);
+        Query myQuery = mFirebaseDatabase.orderByChild(Constants.DATABASE_TOTAL_VIEW).limitToLast(numberLimit);
         myQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -274,7 +279,7 @@ public class FirebaseManager {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    if (mListVideoRecommend.size() + videoAdapter.getVideos().size() == 20) {
+                    if (mListVideoRecommend.size() + videoAdapter.getVideos().size() == Constants.LIMIT_RECOMMEND) {
                         android.util.Log.d(TAG, "onDataChange: fuck");
                         break;
                     }

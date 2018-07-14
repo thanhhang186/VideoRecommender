@@ -67,6 +67,8 @@ public class VideoDeTailAdapter extends VideoAbstract {
         TextView viewRec;
         @BindView(R.id.loading_image_progress)
         ProgressBar loadingImageProgressBar;
+        @BindView(R.id.recommend)
+        TextView recommend;
 
         public VideoRecommendViewHolder(View itemView) {
             super(itemView);
@@ -74,11 +76,13 @@ public class VideoDeTailAdapter extends VideoAbstract {
         }
 
         public void bind(Video video) {
-            loadingImageProgressBar.setVisibility(View.VISIBLE);
+//            loadingImageProgressBar.setVisibility(View.VISIBLE);
             posterRec.setImageDrawable(null);
             titleRec.setText(video.getName());
             tvDescriptionRec.setText(video.getVideoDescribe());
             viewRec.setText(formatViews(video.getTotalView()) + " lượt xem");
+            recommend.setVisibility(video.isRecommended() ? View.VISIBLE : View.GONE);
+
             Picasso.get()
                     .load("https://img.youtube.com/vi/" + video.getLinkVideo() + "/0.jpg")
                     .placeholder(R.drawable.default_image).into(posterRec, new Callback() {
@@ -121,7 +125,9 @@ public class VideoDeTailAdapter extends VideoAbstract {
         public void bind(Video video) {
             title.setText(video.getName());
             view.setText(formatViews(video.getTotalView()) + " lượt xem");
+
             FirebaseManager.getInstance().getRatingByUidAndVid(context, PrefUtils.getUserId(context), video.getId(), ratingBar);
+
             if (PrefUtils.getUserId(context) != null && !PrefUtils.getUserId(context).equals("")) {
                 ratingBar.setVisibility(View.VISIBLE);
                 underLineRating.setVisibility(View.VISIBLE);
@@ -129,6 +135,7 @@ public class VideoDeTailAdapter extends VideoAbstract {
                 ratingBar.setVisibility(View.GONE);
                 underLineRating.setVisibility(View.GONE);
             }
+
             btnShowDetailVideo.setOnClickListener(v -> {
                 tvDescription.setText(video.getVideoDescribe());
                 if (btnShowDetailClicked == false) {

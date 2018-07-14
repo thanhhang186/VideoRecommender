@@ -58,6 +58,8 @@ public class VideoAdapter extends VideoAbstract {
         TextView view;
         @BindView(R.id.loading_image_progress)
         ProgressBar loadingImageProgressBar;
+        @BindView(R.id.recommend)
+        TextView recommend;
 
         public VideoViewHolder(View itemView) {
             super(itemView);
@@ -65,10 +67,11 @@ public class VideoAdapter extends VideoAbstract {
         }
 
         public void bind(final Video video) {
-            loadingImageProgressBar.setVisibility(View.VISIBLE);
+//            loadingImageProgressBar.setVisibility(View.GONE);
             poster.setImageDrawable(null);
             title.setText(video.getName());
             tvDescription.setText(video.getVideoDescribe());
+            recommend.setVisibility(video.isRecommended() ? View.VISIBLE : View.GONE);
 
             view.setText(formatViews(video.getTotalView()) + " lượt xem");
             Picasso.get()

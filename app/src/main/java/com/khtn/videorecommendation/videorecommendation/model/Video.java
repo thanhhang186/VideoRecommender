@@ -9,6 +9,7 @@ public class Video implements Serializable {
     private String duration;
     private long totalView;
     private String videoDescribe;
+    private boolean isRecommended = false;
 
     public Video() {
     }
@@ -17,19 +18,21 @@ public class Video implements Serializable {
         this.name = name;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
     public Video(String duration,  String linkVideo, String name, int totalView, String videoDescribe) {
         this.name = name;
         this.linkVideo = linkVideo;
         this.duration = duration;
         this.totalView = totalView;
         this.videoDescribe = videoDescribe;
+    }
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -71,4 +74,10 @@ public class Video implements Serializable {
     public void setVideoDescribe(String videoDescribe) {
         this.videoDescribe = videoDescribe;
     }
+
+    public void setRecommended(boolean isRecommended) {
+        this.isRecommended = isRecommended;
+    }
+
+    public boolean isRecommended() { return this.isRecommended; }
 }

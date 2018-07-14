@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
-    android:layout_height="300dp"
+    android:layout_height="wrap_content"
     android:layout_margin="10dp"
     app:cardCornerRadius="8dp"
     app:cardElevation="0.1dp"
@@ -31,6 +31,7 @@
                 android:layout_height="@dimen/poster_progressbar_size"
                 android:layout_gravity="center"
                 android:indeterminateDrawable="@drawable/custom_progress"
+                android:visibility="gone"
                 android:theme="@style/CircularProgress" />
 
         </FrameLayout>
@@ -68,6 +69,7 @@
                 android:textSize="14sp"
                 android:transitionName="@string/detail_video_content_transition"
                 tools:text="Tao đợi mẹ" />
+
             <TextView
                 android:id="@+id/view"
                 android:layout_width="match_parent"
@@ -79,6 +81,19 @@
                 android:textSize="14sp"
                 android:transitionName="@string/detail_video_content_transition"
                 tools:text="340 lượt xem" />
+
+            <TextView
+                android:id="@+id/recommend"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-condensed"
+                android:maxLines="1"
+                android:textSize="14sp"
+                android:visibility="gone"
+                android:text="Recommended for you"/>
+
         </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>
